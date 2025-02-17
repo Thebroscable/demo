@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     public void deleteBookById(Long bookId) {
         if (!bookRepository.existsById(bookId)) {
@@ -36,7 +37,7 @@ public class BookService {
                 .orElseThrow(() -> new BookNotFoundException(bookId));
         log.info("Book retrieved: {}", book);
 
-        return BookMapper.INSTANCE.toResponse(book);
+        return bookMapper.toResponse(book);
     }
 
     public Long createBook(BookRequest bookRequest) {
@@ -57,7 +58,7 @@ public class BookService {
         Page<Book> bookPage = bookRepository.findAll(pageable);
         log.info("Retrieved {} books", bookPage.getTotalElements());
 
-        return BookMapper.INSTANCE.toResponse(bookPage);
+        return bookMapper.toResponse(bookPage);
     }
 
     public Long updateBookById(Long bookId, BookRequest bookRequest) {
