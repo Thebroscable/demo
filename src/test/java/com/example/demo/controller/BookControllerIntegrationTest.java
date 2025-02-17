@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestcontainersConfiguration.class)
 @AutoConfigureMockMvc
-public class BookControllerIntegrationTest {
+class BookControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;

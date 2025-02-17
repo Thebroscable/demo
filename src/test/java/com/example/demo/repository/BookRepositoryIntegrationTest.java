@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Import(TestcontainersConfiguration.class)
-public class BookRepositoryIntegrationTest {
+class BookRepositoryIntegrationTest {
 
     @Autowired
     private BookRepository bookRepository;
