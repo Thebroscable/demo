@@ -15,7 +15,7 @@ public interface BookRepository extends JpaRepository<Book,Long> {
 
     boolean existsByIsbnAndIdNot(String isbn, Long id);
 
-    @Query("SELECT a FROM book a WHERE " +
+    @Query("SELECT a FROM Book a WHERE " +
             "LOWER(a.title) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
             "LOWER(a.author) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
             "LOWER(a.publisher) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
