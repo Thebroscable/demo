@@ -35,7 +35,7 @@ class BookControllerIntegrationTest {
     private Book savedBook;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Book book = Book.builder()
                 .title("The Great Gatsby")
                 .author("F. Scott Fitzgerald")
@@ -81,7 +81,7 @@ class BookControllerIntegrationTest {
                 .language("English")
                 .description("A dystopian novel...");
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/book/")
+        mockMvc.perform(MockMvcRequestBuilders.post("/book")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(bookRequest)))
                 .andExpect(status().isOk())
@@ -96,7 +96,7 @@ class BookControllerIntegrationTest {
                 .publisher("Secker & Warburg")
                 .isbn(savedBook.getIsbn());
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/book/")
+        mockMvc.perform(MockMvcRequestBuilders.post("/book")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(bookRequest)))
                 .andExpect(status().isConflict());
@@ -110,7 +110,7 @@ class BookControllerIntegrationTest {
                 .publisher("Secker & Warburg")
                 .isbn("1");
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/book/")
+        mockMvc.perform(MockMvcRequestBuilders.post("/book")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(bookRequest)))
                 .andExpect(status().isBadRequest());
@@ -142,7 +142,7 @@ class BookControllerIntegrationTest {
 
     @Test
     void shouldReturnBooksPaginated() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/book/")
+        mockMvc.perform(MockMvcRequestBuilders.get("/book")
                         .param("page", "0")
                         .param("size", "10")
                         .accept(MediaType.APPLICATION_JSON))

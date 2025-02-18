@@ -98,7 +98,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
-  /book/:
+  /book:
     post:
       description: Creates a new book in the system and returns the ID of the created book
       operationId: createBook
@@ -162,6 +162,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedBookResponse'
+  /request-count:
+    get:
+      description: Retrieve the total number of requests received by the server
+      operationId: getRequestCount
+      responses:
+        '200':
+          description: Successfully fetched request count
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+                example: 12314
 components:
   schemas:
     ApiError:
