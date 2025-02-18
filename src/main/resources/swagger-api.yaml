@@ -132,10 +132,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiError'
     get:
-      description: |
-        Retrieves a paginated list of books. The `size` parameter determines the number of books per page, 
-        and the `page` parameter specifies the page number to fetch.
-      operationId: getBooksPaginated
+      description: Search for books using title, author, publisher, or ISBN.
+      operationId: searchBooks
       parameters:
         - in: query
           name: page
@@ -151,9 +149,15 @@ paths:
           schema:
             type: integer
             default: 10
+        - in: query
+          name: searchText
+          description: Search text for filtering books by title, author, publisher, or ISBN
+          required: false
+          schema:
+            type: string
       responses:
         '200':
-          description: A paginated response containing a list of books
+          description: Found books based on search criteria
           content:
             application/json:
               schema:

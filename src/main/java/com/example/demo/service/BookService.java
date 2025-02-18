@@ -53,7 +53,7 @@ public class BookService {
         return bookId;
     }
 
-    public PaginatedBookResponse getBooksPaginated(Integer page, Integer size) {
+    private PaginatedBookResponse getBooksPaginated(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> bookPage = bookRepository.findAll(pageable);
         log.info("Retrieved {} books", bookPage.getTotalElements());
@@ -73,5 +73,17 @@ public class BookService {
         log.info("Successfully updated book with ID: {}", bookId);
 
         return bookRepository.save(book).getId();
+    }
+
+    public PaginatedBookResponse searchBook(Integer page, Integer size, String searchText) {
+        if (searchText == null || searchText.trim().isEmpty()) {
+            return this.getBooksPaginated(page, size);
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> bookPage = bookRepository.searchBooks(searchText.trim(), pageable);
+        log.info("Search retrieved {} books", bookPage.getTotalElements());
+
+        return bookMapper.toResponse(bookPage);
     }
 }
