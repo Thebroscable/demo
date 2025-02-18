@@ -75,3 +75,14 @@ Swagger UI can be accessed at:
 [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 Simply open the above link in your browser to view the full API documentation and test the available methods.
+
+---
+
+## Default Credentials
+
+The default login credentials for the application are:
+
+- **Username:** `user`
+- **Password:** `password`
+
+These can be used to authenticate and access the application with basic authentication.
