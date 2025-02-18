@@ -63,3 +63,15 @@ To stop the application and remove all running containers, use:
 ```bash
 docker-compose down
 ```
+
+---
+
+## Accessing Swagger UI
+
+The application provides a Swagger UI interface that allows easy testing of the available API endpoints.
+
+Swagger UI can be accessed at:
+
+[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
+Simply open the above link in your browser to view the full API documentation and test the available methods.
