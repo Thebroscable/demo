@@ -6,6 +6,7 @@ import com.example.demo.repository.entity.Book;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.demo.TestcontainersConfiguration;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,11 @@ class BookControllerIntegrationTest {
     private BookRepository bookRepository;
 
     private Book savedBook;
+
+    private RequestSpecification givenAuthenticatedUser() {
+        return given().baseUri("http://localhost").port(this.port).contentType(ContentType.JSON)
+                .auth().basic("user", "password");
+    }
 
     @BeforeEach
     void setUp() {
@@ -64,7 +70,7 @@ class BookControllerIntegrationTest {
                 .language("English")
                 .description("A dystopian novel...");
 
-        given().baseUri("http://localhost").port(port).contentType(ContentType.JSON)
+        givenAuthenticatedUser()
                 .body(new ObjectMapper().writeValueAsString(bookRequest))
             .when()
                 .post("/book")
@@ -81,7 +87,7 @@ class BookControllerIntegrationTest {
                 .publisher("Secker & Warburg")
                 .isbn(savedBook.getIsbn());
 
-        given().baseUri("http://localhost").port(port).contentType(ContentType.JSON)
+        givenAuthenticatedUser()
                 .body(new ObjectMapper().writeValueAsString(bookRequest))
             .when()
                 .post("/book")
@@ -97,7 +103,7 @@ class BookControllerIntegrationTest {
                 .publisher("Secker & Warburg")
                 .isbn("1");  // Invalid ISBN
 
-        given().baseUri("http://localhost").port(port).contentType(ContentType.JSON)
+        givenAuthenticatedUser()
                 .body(new ObjectMapper().writeValueAsString(bookRequest))
             .when()
                 .post("/book")
@@ -112,7 +118,8 @@ class BookControllerIntegrationTest {
                 .author("George Orwell")
                 .publisher("Secker & Warburg");
 
-        given().baseUri("http://localhost").port(port).contentType(ContentType.JSON)
+        givenAuthenticatedUser()
+                .auth().basic("user", "password")
                 .body(new ObjectMapper().writeValueAsString(updatedBookRequest))
             .when()
                 .put("/book/{bookId}", savedBook.getId())
@@ -123,13 +130,13 @@ class BookControllerIntegrationTest {
 
     @Test
     void shouldDeleteBook() {
-        given().baseUri("http://localhost").port(port)
-                .when()
+        givenAuthenticatedUser()
+            .when()
                 .delete("/book/{bookId}", savedBook.getId())
-                .then()
+            .then()
                 .statusCode(HttpStatus.OK.value());
 
-        given().baseUri("http://localhost").port(port)
+        givenAuthenticatedUser()
             .when()
                 .get("/book/{bookId}", savedBook.getId())
             .then()
@@ -138,7 +145,7 @@ class BookControllerIntegrationTest {
 
     @Test
     void shouldReturnBooksPaginated() {
-        given().baseUri("http://localhost").port(port).accept(ContentType.JSON)
+        givenAuthenticatedUser()
                 .param("page", "0")
                 .param("size", "10")
             .when()

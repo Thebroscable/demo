@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.filter.RequestCounterFilter;
 import com.example.demo.TestcontainersConfiguration;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +21,11 @@ class RequestCounterControllerIntegrationTest {
     @LocalServerPort
     private int port;
 
+    private RequestSpecification givenAuthenticatedUser() {
+        return given().baseUri("http://localhost").port(this.port).contentType(ContentType.JSON)
+                .auth().basic("user", "password");
+    }
+
     @BeforeEach
     void setUp() {
         RequestCounterFilter.resetRequestCount();
@@ -26,13 +33,13 @@ class RequestCounterControllerIntegrationTest {
 
     @Test
     void shouldReturnRequestCount() {
-        given().baseUri("http://localhost").port(port)
+        givenAuthenticatedUser()
             .when()
                 .get("/book")
             .then()
                 .statusCode(HttpStatus.OK.value());
 
-        given().baseUri("http://localhost").port(port)
+        givenAuthenticatedUser()
             .when()
                 .get("/request-count")
             .then()
