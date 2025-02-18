@@ -1,7 +1,7 @@
 package com.example.demo.repository;
 
-import com.example.demo.TestcontainersConfiguration;
 import com.example.demo.repository.entity.Book;
+import com.example.demo.TestcontainersConfiguration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
