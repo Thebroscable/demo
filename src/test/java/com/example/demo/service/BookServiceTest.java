@@ -2,16 +2,17 @@ package com.example.demo.service;
 
 import com.example.demo.exception.BookNotFoundException;
 import com.example.demo.exception.IsbnAlreadyExistsException;
+import com.example.demo.mapper.BookMapper;
 import com.example.demo.models.BookRequest;
 import com.example.demo.models.BookResponse;
 import com.example.demo.models.PaginatedBookResponse;
 import com.example.demo.repository.BookRepository;
 import com.example.demo.repository.entity.Book;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class BookServiceTest {
 
     @InjectMocks
@@ -30,11 +32,8 @@ class BookServiceTest {
 
     @Mock
     private BookRepository bookRepository;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+    @Mock
+    private BookMapper bookMapper;
 
     @Test
     void deleteBookById_shouldDeleteBook_whenBookExists() {
@@ -59,6 +58,7 @@ class BookServiceTest {
         Long bookId = 1L;
         Book book = Book.builder().id(bookId).build();
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(bookMapper.toResponse(book)).thenReturn(new BookResponse().id(bookId));
 
         BookResponse response = bookService.getBookById(bookId);
 
@@ -96,15 +96,32 @@ class BookServiceTest {
     }
 
     @Test
-    void getBooksPaginated_shouldReturnPaginatedResponse() {
+    void searchBooks_shouldReturnPaginatedResponse() {
         Pageable pageable = PageRequest.of(0, 2);
         Book book1 = Book.builder().id(1L).build();
         Book book2 = Book.builder().id(2L).build();
 
         Page<Book> bookPage = new PageImpl<>(Arrays.asList(book1, book2), pageable, 2);
         when(bookRepository.findAll(pageable)).thenReturn(bookPage);
+        when(bookMapper.toResponse(bookPage)).thenReturn(new PaginatedBookResponse().totalElements(2L));
 
-        PaginatedBookResponse response = bookService.getBooksPaginated(0, 2);
+        PaginatedBookResponse response = bookService.searchBook(0, 2, null);
+
+        assertNotNull(response);
+        assertEquals(2, response.getTotalElements());
+    }
+
+    @Test
+    void searchBooks_shouldReturnFilteredPaginatedResponse() {
+        Pageable pageable = PageRequest.of(0, 2);
+        Book book1 = Book.builder().id(1L).build();
+        Book book2 = Book.builder().id(2L).build();
+
+        Page<Book> bookPage = new PageImpl<>(Arrays.asList(book1, book2), pageable, 2);
+        when(bookRepository.searchBooks("test", pageable)).thenReturn(bookPage);
+        when(bookMapper.toResponse(bookPage)).thenReturn(new PaginatedBookResponse().totalElements(2L));
+
+        PaginatedBookResponse response = bookService.searchBook(0, 2, "test");
 
         assertNotNull(response);
         assertEquals(2, response.getTotalElements());
@@ -134,5 +151,16 @@ class BookServiceTest {
         when(bookRepository.existsByIsbnAndIdNot(bookRequest.getIsbn(), bookId)).thenReturn(true);
 
         assertThrows(IsbnAlreadyExistsException.class, () -> bookService.updateBookById(bookId, bookRequest));
+    }
+
+    @Test
+    void updateBookById_shouldThrowException_whenBookNotFound() {
+        Long bookId = 1L;
+        BookRequest bookRequest = new BookRequest().isbn("9781234567897");
+
+        when(bookRepository.existsByIsbnAndIdNot(bookRequest.getIsbn(), bookId)).thenReturn(false);
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+
+        assertThrows(BookNotFoundException.class, () -> bookService.updateBookById(bookId, bookRequest));
     }
 }

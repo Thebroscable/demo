@@ -38,9 +38,12 @@ public class BookController implements BookApi {
     }
 
     @Override
-    public ResponseEntity<PaginatedBookResponse> getBooksPaginated(Integer page, Integer size) {
-        log.info("Request to get all books, page = {}, size = {}", page, size);
-        return ResponseEntity.ok(bookService.getBooksPaginated(page, size));
+    public ResponseEntity<PaginatedBookResponse> searchBooks(Integer page,
+                                                             Integer size,
+                                                             String searchText) {
+        log.info("Request to get paginated books, page = {}, size = {}, search text = {}",
+                page, size, searchText);
+        return ResponseEntity.ok(bookService.searchBook(page, size, searchText));
     }
 
     @Override

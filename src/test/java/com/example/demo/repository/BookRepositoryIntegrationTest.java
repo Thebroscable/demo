@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,5 +68,24 @@ class BookRepositoryIntegrationTest {
     void shouldReturnFalseWhenIsbnDoesNotExist() {
         boolean exists = bookRepository.existsByIsbnAndIdNot("1111111111111", book1.getId());
         assertFalse(exists);
+    }
+
+    @Test
+    void shouldReturnPaginatedSearchResult() {
+        Pageable pageable = PageRequest.of(0, 2);
+        Page<Book> bookPage = bookRepository.searchBooks("book", pageable);
+
+        assertEquals(2, bookPage.getTotalElements());
+    }
+
+    @Test
+    void shouldReturnPaginatedSingleBookResult() {
+        Pageable pageable = PageRequest.of(0, 2);
+        Page<Book> bookPage = bookRepository.searchBooks(book1.getIsbn(), pageable);
+
+        assertEquals(1, bookPage.getTotalElements());
+
+        Long foundBookId = bookPage.getContent().getFirst().getId();
+        assertEquals(book1.getId(), foundBookId);
     }
 }
