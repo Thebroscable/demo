@@ -21,7 +21,7 @@ Make sure you have the following installed:
 Run the following Maven command to compile the project and package the application as a `.jar` file:
 
 ```bash
-mvn clean install -DskipTests
+mvn clean package -DskipTests
 ```
 
 This will skip the tests and generate the `app.jar` file in the `target` directory.
