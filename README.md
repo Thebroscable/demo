@@ -86,13 +86,3 @@ The default login credentials for the application are:
 - **Password:** `password`
 
 These can be used to authenticate and access the application with basic authentication.
-
----
-
-## **Frontend UI**
-
-The frontend user interface for this Spring Boot application is available at the following GitHub repository:
-
-[https://github.com/Thebroscable/demo-ui](https://github.com/Thebroscable/demo-ui)
-
-This repository contains the UI components that interact with the backend Spring Boot application.
