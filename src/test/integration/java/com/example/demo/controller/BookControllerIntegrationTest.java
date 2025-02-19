@@ -75,7 +75,7 @@ class BookControllerIntegrationTest {
             .when()
                 .post("/book")
             .then()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.CREATED.value())
                 .body("$", is(notNullValue()));
     }
 

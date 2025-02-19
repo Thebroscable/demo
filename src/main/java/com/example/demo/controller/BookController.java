@@ -7,6 +7,7 @@ import com.example.demo.models.PaginatedBookResponse;
 import com.example.demo.service.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class BookController implements BookApi {
     @Override
     public ResponseEntity<Long> createBook(BookRequest body) {
         log.info("Request to create book, payload = {}", body);
-        return ResponseEntity.ok(bookService.createBook(body));
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(body));
     }
 
     @Override
